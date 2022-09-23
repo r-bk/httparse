@@ -749,6 +749,7 @@ fn parse_version(bytes: &mut Bytes<'_>) -> Result<u8> {
         return match &eight {
             b"HTTP/1.0" => Ok(Status::Complete(0)),
             b"HTTP/1.1" => Ok(Status::Complete(1)),
+            b"ICAP/1.0" => Ok(Status::Complete(10)),
             _ => Err(Error::Version),
         }
     }
@@ -757,9 +758,9 @@ fn parse_version(bytes: &mut Bytes<'_>) -> Result<u8> {
 
     // If there aren't at least 8 bytes, we still want to detect early
     // if this is a valid version or not. If it is, we'll return Partial.
-    expect!(bytes.next() == b'H' => Err(Error::Version));
-    expect!(bytes.next() == b'T' => Err(Error::Version));
-    expect!(bytes.next() == b'T' => Err(Error::Version));
+    expect!(bytes.next() == (b'H'|b'I') => Err(Error::Version));
+    expect!(bytes.next() == (b'T'|b'C') => Err(Error::Version));
+    expect!(bytes.next() == (b'T'|b'A') => Err(Error::Version));
     expect!(bytes.next() == b'P' => Err(Error::Version));
     expect!(bytes.next() == b'/' => Err(Error::Version));
     expect!(bytes.next() == b'1' => Err(Error::Version));
