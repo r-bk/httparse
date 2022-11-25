@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - "*-pr*"
 
 env:
   RUST_BACKTRACE: 1
